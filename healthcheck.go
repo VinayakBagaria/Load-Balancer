@@ -8,9 +8,9 @@ import (
 func startHealthCheck() {
 	s := gocron.NewScheduler(time.Local)
 	for _, host := range serverList {
-		s.Every(2).Second().Do(func() {
-			host.checkHealth()
-		})
+		s.Every(2).Second().Do(func(h *server) {
+			h.checkHealth()
+		}, host)
 	}
 	s.StartAsync()
 }

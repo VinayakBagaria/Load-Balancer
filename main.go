@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"net/http/httputil"
@@ -8,15 +9,17 @@ import (
 )
 
 var (
-	serverList = []string{
-		"http://127.0.0.1:5000",
-		"http://127.0.0.1:5001",
-		"http://127.0.0.1:5002",
-	}
+	serverList      []string
+	serverLength    = 5
 	lastServedIndex = 0
 )
 
 func main() {
+	for i := 1; i <= serverLength; i += 1 {
+		serverUrl := fmt.Sprintf("http://localhost:500%d", i)
+		serverList = append(serverList, serverUrl)
+	}
+
 	http.HandleFunc("/", forwardRequest)
 	log.Fatal(http.ListenAndServe(":8000", nil))
 }

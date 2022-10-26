@@ -1,9 +1,10 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
+	"net/http/httputil"
+	"net/url"
 )
 
 func main() {
@@ -11,6 +12,13 @@ func main() {
 	log.Fatal(http.ListenAndServe(":8000", nil))
 }
 
-func forwardRequest(w http.ResponseWriter, req *http.Request) {
-	fmt.Fprintln(w, "Hello from Load Balancer")
+func forwardRequest(w http.ResponseWriter, r *http.Request) {
+	server := getServer()
+	rProxy := httputil.NewSingleHostReverseProxy(server)
+	rProxy.ServeHTTP(w, r)
+}
+
+func getServer() *url.URL {
+	server, _ := url.Parse("http://127.0.0.1:5000")
+	return server
 }

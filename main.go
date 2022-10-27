@@ -21,5 +21,6 @@ func forwardRequest(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	fmt.Sprintf("Processing request from %s\n", s.Name)
-	s.ReverseProxy.ServeHTTP(w, r)
+	w.Header().Set("X-Proxy", "golang-proxy")
+	s.Proxy.ServeHTTP(w, r)
 }

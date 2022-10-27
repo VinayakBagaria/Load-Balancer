@@ -8,10 +8,10 @@ import (
 )
 
 type server struct {
-	Name         string
-	URL          string
-	ReverseProxy *httputil.ReverseProxy
-	Health       bool
+	Name   string
+	URL    string
+	Proxy  *httputil.ReverseProxy
+	Health bool
 }
 
 var (
@@ -28,13 +28,16 @@ func CreateServers(desiredCount int) {
 }
 
 func newServer(name string, urlStr string) *server {
-	u, _ := url.Parse(urlStr)
-	rp := httputil.NewSingleHostReverseProxy(u)
+	remote, err := url.Parse(urlStr)
+	if err != nil {
+		panic(err)
+	}
+	proxy := httputil.NewSingleHostReverseProxy(remote)
 	return &server{
-		Name:         name,
-		URL:          urlStr,
-		ReverseProxy: rp,
-		Health:       true,
+		Name:   name,
+		URL:    urlStr,
+		Proxy:  proxy,
+		Health: true,
 	}
 }
 
